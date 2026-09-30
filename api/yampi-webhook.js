@@ -9,10 +9,16 @@ export default async function handler(req, res) {
   const evento = body?.event;
   const cliente = body?.data?.customer || body?.data?.order?.customer;
 
-  // Relay para UTMify (sempre, independente do evento)
+  // Relay para UTMify com headers originais do Yampi
+  const forwardHeaders = { 'Content-Type': 'application/json' };
+  for (const [key, value] of req.headers.entries()) {
+    if (key.toLowerCase().startsWith('x-yampi') || key.toLowerCase() === 'x-hub-signature') {
+      forwardHeaders[key] = value;
+    }
+  }
   fetch(UTMIFY_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: forwardHeaders,
     body: JSON.stringify(body),
   }).catch(() => {});
 
