@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
   // Relay para UTMify com headers originais do Yampi
   const forwardHeaders = { 'Content-Type': 'application/json' };
-  for (const [key, value] of req.headers.entries()) {
+  for (const [key, value] of Object.entries(req.headers)) {
     if (key.toLowerCase().startsWith('x-yampi') || key.toLowerCase() === 'x-hub-signature') {
       forwardHeaders[key] = value;
     }
